@@ -1,4 +1,5 @@
 
+"use client";
 import React, { useState, useEffect, useRef } from 'react';
 import { Language, Theme } from '../types';
 import { TRANSLATIONS } from '../constants';

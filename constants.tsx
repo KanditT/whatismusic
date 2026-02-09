@@ -83,5 +83,12 @@ export const TRANSLATIONS: Record<string, Record<Language, string>> = {
   italianTerms: {
     EN: '"Italian terms are used for tempo because Italian composers were the first to formalize these indicators in the 17th century."',
     TH: '"คำศัพท์ภาษาอิตาลีถูกนำมาใช้เรียกเทมโป เนื่องจากนักประพันธ์เพลงชาวอิตาลีเป็นกลุ่มแรกที่เริ่มกำหนดสัญลักษณ์เหล่านี้อย่างเป็นทางการในศตวรรษที่ 17"'
-  }
+  },
+  voiceExp: { EN: 'Voice Experiment', TH: 'ทดลองด้วยเสียงของคุณ' },
+  recordVoice: { EN: 'RECORD VOICE', TH: 'บันทึกเสียง' },
+  stopRecord: { EN: 'STOP RECORDING', TH: 'หยุดบันทึก' },
+  playVoice: { EN: 'PLAY VOICE', TH: 'เล่นเสียง' },
+  stopVoice: { EN: 'STOP VOICE', TH: 'หยุดเสียง' },
+  voiceHint: { EN: 'Record your voice and see how tempo changes its speed and pitch!', TH: 'บันทึกเสียงของคุณและดูว่าเทมโปเปลี่ยนความเร็วและระดับเสียงอย่างไร!' },
+  metronomeSound: { EN: 'Metronome Tick', TH: 'เสียงจังหวะพื้นฐาน' }
 };

@@ -1,4 +1,5 @@
 
+"use client";
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Point, Language, Theme } from '../types';
 import { TRANSLATIONS } from '../constants';

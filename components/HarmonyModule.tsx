@@ -1,4 +1,5 @@
 
+"use client";
 import React, { useState, useEffect, useRef } from 'react';
 import { Language, Theme } from '../types';
 import { TRANSLATIONS } from '../constants';
@@ -37,8 +38,12 @@ const HarmonyModule: React.FC<HarmonyModuleProps> = ({ onBack, language, theme, 
   const activeOscs = useRef<Record<string, { osc: OscillatorNode, gain: GainNode }>>({});
 
   const initAudio = () => {
-    if (!audioCtxRef.current) audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
-    if (audioCtxRef.current.state === 'suspended') audioCtxRef.current.resume();
+    if (!audioCtxRef.current) {
+      audioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+    }
+    if (audioCtxRef.current.state === 'suspended') {
+      audioCtxRef.current.resume();
+    }
   };
 
   const startNote = (note: Note) => {
@@ -79,6 +84,8 @@ const HarmonyModule: React.FC<HarmonyModuleProps> = ({ onBack, language, theme, 
   const getChordName = () => {
     if (activeNotes.length === 0) return language === 'EN' ? 'No selection' : 'ไม่มีการเลือก';
     if (activeNotes.includes('c3') && activeNotes.includes('e3') && activeNotes.includes('g3') && activeNotes.length === 3) return language === 'EN' ? 'C Major (Happy)' : 'C เมเจอร์ (มีความสุข)';
+    if (activeNotes.includes('f3') && activeNotes.includes('a3') && activeNotes.includes('c4') && activeNotes.length === 3) return language === 'EN' ? 'F Major' : 'F เมเจอร์';
+    if (activeNotes.includes('g3') && activeNotes.includes('b3') && activeNotes.includes('d3') && activeNotes.length === 3) return language === 'EN' ? 'G Major' : 'G เมเจอร์';
     return activeNotes.length === 1 ? (language === 'EN' ? 'Single Note' : 'โน้ตตัวเดียว') : `${activeNotes.length}-Note Cluster`;
   };
 
@@ -95,7 +102,7 @@ const HarmonyModule: React.FC<HarmonyModuleProps> = ({ onBack, language, theme, 
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={toggleTheme} className={`p-2 rounded-full transition-all ${theme === 'dark' ? 'bg-white/5 text-yellow-400' : 'bg-slate-100 text-slate-700'}`}>
+          <button onClick={toggleTheme} className={`p-2 rounded-full transition-all ${theme === 'dark' ? 'bg-white/5 text-yellow-400 hover:bg-white/10' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}>
             <span className="material-symbols-outlined text-sm">{theme === 'dark' ? 'light_mode' : 'dark_mode'}</span>
           </button>
           <button onClick={onBack} className={`flex items-center gap-2 px-4 py-2 rounded-full font-bold transition-all ${theme === 'dark' ? 'bg-white/5 text-white hover:bg-white/10' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}>
@@ -110,8 +117,9 @@ const HarmonyModule: React.FC<HarmonyModuleProps> = ({ onBack, language, theme, 
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary w-fit text-xs font-black uppercase tracking-widest mb-4">Module 05</div>
             <h1 className={`text-5xl font-black ${theme === 'dark' ? 'text-white' : 'text-[#101f22]'}`}>{language === 'EN' ? 'Harmony' : 'เสียงประสาน'}</h1>
-            <p className="text-gray-500 mt-2">{language === 'EN' ? 'Multiple notes played together.' : 'เสียงโน้ตหลายตัวที่เล่นพร้อมกันจนเกิดเป็นเสียงเดียว'}</p>
+            <p className="text-gray-500 mt-2">{language === 'EN' ? 'Multiple notes played together to build texture.' : 'เสียงโน้ตหลายตัวที่เล่นพร้อมกันเพื่อสร้างมิติของเสียง'}</p>
           </div>
+          
           <div className="space-y-6">
              <div className={`rounded-2xl p-6 border transition-colors ${theme === 'dark' ? 'bg-black/20 border-white/5' : 'bg-slate-50 border-slate-100'}`}>
                 <span className="text-[10px] font-black uppercase text-gray-400 tracking-[0.2em] mb-2 block">{t.harmonyName[language]}</span>
@@ -120,14 +128,30 @@ const HarmonyModule: React.FC<HarmonyModuleProps> = ({ onBack, language, theme, 
                    <span className={`text-2xl font-black ${theme === 'dark' ? 'text-white' : 'text-[#101f22]'}`}>{getChordName()}</span>
                 </div>
              </div>
-             <div className="space-y-2">
+             
+             <div className="space-y-3">
                 <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest">{t.tryCombinations[language]}</h3>
-                <button onClick={() => setActiveNotes(['c3', 'e3', 'g3'])} className={`w-full flex items-center justify-between p-4 rounded-xl border transition-all text-sm font-bold ${theme === 'dark' ? 'bg-white/5 border-white/5 text-white hover:bg-primary/20' : 'bg-slate-50 border-slate-100 text-slate-700 hover:bg-primary/5'}`}>
-                   <span>C Major (C+E+G)</span>
-                   <span className="material-symbols-outlined text-primary">auto_awesome</span>
-                </button>
+                <div className="grid gap-2">
+                  <button onClick={() => { initAudio(); setActiveNotes(['c3', 'e3', 'g3']); }} className={`w-full flex items-center justify-between p-4 rounded-xl border transition-all text-sm font-bold ${theme === 'dark' ? 'bg-white/5 border-white/5 text-white hover:bg-primary/20' : 'bg-slate-50 border-slate-100 text-slate-700 hover:bg-primary/5'}`}>
+                    <span>C Major (C+E+G)</span>
+                    <span className="material-symbols-outlined text-primary text-sm">auto_awesome</span>
+                  </button>
+                  <button onClick={() => { initAudio(); setActiveNotes(['f3', 'a3', 'c4']); }} className={`w-full flex items-center justify-between p-4 rounded-xl border transition-all text-sm font-bold ${theme === 'dark' ? 'bg-white/5 border-white/5 text-white hover:bg-primary/20' : 'bg-slate-50 border-slate-100 text-slate-700 hover:bg-primary/5'}`}>
+                    <span>F Major (F+A+C)</span>
+                    <span className="material-symbols-outlined text-primary text-sm">auto_awesome</span>
+                  </button>
+                  <button onClick={() => { initAudio(); setActiveNotes(['g3', 'b3', 'd3']); }} className={`w-full flex items-center justify-between p-4 rounded-xl border transition-all text-sm font-bold ${theme === 'dark' ? 'bg-white/5 border-white/5 text-white hover:bg-primary/20' : 'bg-slate-50 border-slate-100 text-slate-700 hover:bg-primary/5'}`}>
+                    <span>G Major (G+B+D)</span>
+                    <span className="material-symbols-outlined text-primary text-sm">auto_awesome</span>
+                  </button>
+                  <button onClick={() => { initAudio(); setActiveNotes(['c3', 'd3', 'e3', 'f3', 'g3', 'a3', 'b3', 'c4']); }} className={`w-full flex items-center justify-between p-4 rounded-xl border transition-all text-sm font-bold ${theme === 'dark' ? 'bg-white/5 border-white/5 text-white hover:bg-primary/20' : 'bg-slate-50 border-slate-100 text-slate-700 hover:bg-primary/5'}`}>
+                    <span>Full Octave Cluster</span>
+                    <span className="material-symbols-outlined text-primary text-sm">layers</span>
+                  </button>
+                </div>
              </div>
           </div>
+          
           <div className="mt-auto">
              <button onClick={() => setActiveNotes([])} className={`w-full py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${theme === 'dark' ? 'bg-white/5 text-gray-400 hover:bg-red-500/10 hover:text-red-500' : 'bg-gray-100 text-gray-500 hover:bg-red-50 hover:text-red-500'}`}>
                 <span className="material-symbols-outlined">restart_alt</span>
@@ -145,13 +169,22 @@ const HarmonyModule: React.FC<HarmonyModuleProps> = ({ onBack, language, theme, 
                  {activeNotes.length > 0 && <div className="absolute w-40 h-40 bg-white/40 blur-[50px] rounded-full animate-pulse shadow-inner" />}
               </div>
            </div>
-           <div className={`w-full border-t p-10 z-20 shadow-2xl transition-colors ${theme === 'dark' ? 'bg-[#1a2b2e] border-white/5' : 'bg-white border-slate-200'}`}>
-              <div className="max-w-5xl mx-auto flex gap-4 overflow-x-auto pb-4">
+           
+           <div className={`w-full border-t px-10 pt-16 pb-10 z-20 shadow-2xl transition-colors ${theme === 'dark' ? 'bg-[#1a2b2e] border-white/5' : 'bg-white border-slate-200'}`}>
+              <div className="max-w-5xl mx-auto flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
                  {NOTES.map((note) => (
-                    <button key={note.id} onClick={() => { initAudio(); setActiveNotes(prev => prev.includes(note.id) ? prev.filter(n => n !== note.id) : [...prev, note.id]); }} className={`flex flex-col items-center gap-4 transition-all duration-500 min-w-[100px] ${activeNotes.includes(note.id) ? 'scale-110 -translate-y-2' : 'opacity-40 grayscale hover:opacity-100 hover:grayscale-0'}`}>
+                    <button 
+                        key={note.id} 
+                        onClick={() => { initAudio(); setActiveNotes(prev => prev.includes(note.id) ? prev.filter(n => n !== note.id) : [...prev, note.id]); }} 
+                        className={`flex flex-col items-center gap-4 transition-all duration-500 min-w-[100px] ${activeNotes.includes(note.id) ? 'scale-105 -translate-y-4' : 'opacity-40 grayscale hover:opacity-100 hover:grayscale-0'}`}
+                    >
                         <div className={`w-24 h-24 rounded-[2rem] bg-gradient-to-br ${note.grad} shadow-2xl flex items-center justify-center relative overflow-hidden group`}>
                             <span className="text-white font-black text-3xl drop-shadow-md">{note.name}</span>
+                            {activeNotes.includes(note.id) && (
+                               <div className="absolute inset-0 border-4 border-white/50 rounded-[2rem]"></div>
+                            )}
                         </div>
+                        <span className={`text-[10px] font-black uppercase tracking-widest ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>{note.label}</span>
                     </button>
                  ))}
               </div>

@@ -1,5 +1,8 @@
 
 {
-  "name": "What Is Music? - Interactive Exhibition",
-  "description": "An immersive educational experience exploring the fundamental elements of music: Melody, Rhythm, Tempo, Dynamics, and Harmony through interactive visual and auditory modules."
+  "name": "What_Is_Music",
+  "description": "An immersive educational experience exploring the fundamental elements of music: Melody, Rhythm, Tempo, Dynamics, and Harmony through interactive visual and auditory modules.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
 }

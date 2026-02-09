@@ -1,0 +1,40 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@keyframes ripple {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+.ripple-effect {
+  animation: ripple 1s ease-out infinite;
+}
+
+.blend-multiply { mix-blend-mode: multiply; }
+.dark .blend-multiply { mix-blend-mode: screen; }
+
+.stage-grid {
+  background-size: 40px 40px;
+  background-image: radial-gradient(circle, #cfe3e7 1px, transparent 1px);
+}
+
+.dark .stage-grid {
+  background-image: radial-gradient(circle, #2a3b3e 1px, transparent 1px);
+}
+
+/* Base scrollbar hide for cleaner UI */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
