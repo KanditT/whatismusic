@@ -23,8 +23,32 @@ const App: React.FC = () => {
 
   const toggleTheme = () => setTheme(prev => prev === 'light' ? 'dark' : 'light');
 
+  const MODULE_ORDER = [
+    ModuleId.MELODY,
+    ModuleId.RHYTHM,
+    ModuleId.TEMPO,
+    ModuleId.DYNAMICS,
+    ModuleId.HARMONY
+  ];
+
+  const handleNext = () => {
+    const currentIndex = MODULE_ORDER.indexOf(activeModule);
+    if (currentIndex !== -1) {
+      setActiveModule(MODULE_ORDER[(currentIndex + 1) % MODULE_ORDER.length]);
+    }
+  };
+
+  const handlePrevious = () => {
+    const currentIndex = MODULE_ORDER.indexOf(activeModule);
+    if (currentIndex !== -1) {
+      setActiveModule(MODULE_ORDER[(currentIndex - 1 + MODULE_ORDER.length) % MODULE_ORDER.length]);
+    }
+  };
+
   const sharedProps = {
     onBack: () => setActiveModule(ModuleId.MENU),
+    onNext: handleNext,
+    onPrevious: handlePrevious,
     language,
     theme,
     toggleTheme
@@ -56,7 +80,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className={`min-h-screen w-full transition-colors duration-500 ${theme === 'dark' ? 'bg-[#0a1118]' : 'bg-background-light'}`}>
+    <div className={`min-h-screen w-full transition-colors duration-500 ${theme === 'dark' ? 'bg-[#0F0A1A]' : 'bg-background-light'}`}>
       {renderModule()}
     </div>
   );

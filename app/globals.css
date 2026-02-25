@@ -1,7 +1,43 @@
+@import "tailwindcss";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@theme {
+  /* ── Fonts ────────────────────────────────────────────────────── */
+  --font-display: "Google Sans", sans-serif;
+  --font-body: "Google Sans", sans-serif;
+
+  /* ── Border Radius ────────────────────────────────────────────── */
+  --radius-DEFAULT: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
+  --radius-full: 9999px;
+
+  /* ── Light Theme Colors ───────────────────────────────────────── */
+  --color-background-light: #E8DCFF;   /* Main Background      */
+  --color-card-light:       #F3EEFF;   /* Card Background      */
+  --color-border-light:     #D0BFFF;   /* Border / Divider     */
+  --color-text-dark:        #1A1A1A;   /* Primary Text         */
+  --color-text-secondary:   #5A4E72;   /* Secondary Text       */
+  --color-cta:              #FFDE59;   /* CTA / Button         */
+  --color-cta-hover:        #F5CE30;   /* Button Hover         */
+  --color-primary:          #9B5FE3;   /* Main Accent          */
+  --color-success:          #4ADE80;   /* Success              */
+  --color-error:            #F87171;   /* Error                */
+
+  /* ── Dark Theme Colors ────────────────────────────────────────── */
+  --color-bg-dark:          #0F0A1A;   /* Main Background      */
+  --color-surface-dark:     #1A1030;   /* Card Background      */
+  --color-elevated-dark:    #251848;   /* Elevated Surface     */
+  --color-border-dark:      #2E1F55;   /* Border / Divider     */
+  --color-input-dark:       #1E1438;   /* Input Background     */
+  --color-focus-dark:       #B87AFF;   /* Input Focus Ring     */
+  --color-text-soft:        #E8DCFF;   /* Primary Text (dark)  */
+  --color-text-muted:       #9B7EC8;   /* Secondary Text       */
+  --color-text-placeholder: #5A4E72;   /* Muted / Placeholder  */
+  --color-accent-dark:      #B87AFF;   /* Main Accent (dark)   */
+  --color-btn-disabled:     #3D3060;   /* Button Disabled      */
+  --color-warning:          #FB923C;   /* Warning              */
+}
 
 @layer base {
   body {
@@ -10,24 +46,34 @@
 }
 
 @keyframes ripple {
-  0% { transform: scale(1); opacity: 0.8; }
-  100% { transform: scale(2.5); opacity: 0; }
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
 }
 
 .ripple-effect {
   animation: ripple 1s ease-out infinite;
 }
 
-.blend-multiply { mix-blend-mode: multiply; }
-.dark .blend-multiply { mix-blend-mode: screen; }
+.blend-multiply {
+  mix-blend-mode: multiply;
+}
+.dark .blend-multiply {
+  mix-blend-mode: screen;
+}
 
 .stage-grid {
   background-size: 40px 40px;
-  background-image: radial-gradient(circle, #cfe3e7 1px, transparent 1px);
+  background-image: radial-gradient(circle, #D0BFFF 1px, transparent 1px);
 }
 
 .dark .stage-grid {
-  background-image: radial-gradient(circle, #2a3b3e 1px, transparent 1px);
+  background-image: radial-gradient(circle, #251848 1px, transparent 1px);
 }
 
 /* Base scrollbar hide for cleaner UI */

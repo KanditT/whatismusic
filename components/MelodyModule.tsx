@@ -6,12 +6,14 @@ import { TRANSLATIONS } from '../constants';
 
 interface MelodyModuleProps {
   onBack: () => void;
+  onNext: () => void;
+  onPrevious: () => void;
   language: Language;
   theme: Theme;
   toggleTheme: () => void;
 }
 
-const MelodyModule: React.FC<MelodyModuleProps> = ({ onBack, language, theme, toggleTheme }) => {
+const MelodyModule: React.FC<MelodyModuleProps> = ({ onBack, onNext, onPrevious, language, theme, toggleTheme }) => {
   const t = TRANSLATIONS;
   const [points, setPoints] = useState<Point[]>([]);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -120,33 +122,41 @@ const MelodyModule: React.FC<MelodyModuleProps> = ({ onBack, language, theme, to
   }, [playheadPoint, isPlaying]);
 
   return (
-    <div className={`flex h-screen w-full flex-col transition-colors duration-500 ${theme === 'dark' ? 'bg-[#0a1118]' : 'bg-background-light'} overflow-hidden`}>
-      <header className={`flex items-center justify-between border-b px-6 py-4 z-20 transition-colors ${theme === 'dark' ? 'bg-[#1a2b2e] border-white/5' : 'bg-white border-slate-200'}`}>
+    <div className={`flex h-screen w-full flex-col transition-colors duration-500 ${theme === 'dark' ? 'bg-[#0F0A1A]' : 'bg-background-light'} overflow-hidden`}>
+      <header className={`flex items-center justify-between border-b px-6 py-4 z-20 transition-colors ${theme === 'dark' ? 'bg-[#1A1030] border-[#251848]' : 'bg-white border-primary/10'}`}>
         <div className="flex items-center gap-4">
-          <div className="size-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+          <button onClick={onBack} className={`flex items-center gap-2 px-4 py-2 rounded-full font-bold transition-all ${theme === 'dark' ? 'bg-[#251848] text-[#E8DCFF] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}>
+            <span className="material-symbols-outlined">arrow_back</span>
+            <span className="hidden sm:inline">{t.backToMenu[language]}</span>
+          </button>
+          <div className="hidden sm:flex size-10 rounded-full bg-primary/10 text-primary items-center justify-center">
             <span className="material-symbols-outlined">music_note</span>
           </div>
-          <div>
-            <h2 className={`text-lg font-bold ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>What Is Music?</h2>
-            <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{t.exhibition[language]}</p>
+          <div className="hidden md:block">
+            <h2 className={`text-lg font-bold ${theme === 'dark' ? 'text-[#E8DCFF]' : 'text-[#1A1A1A]'}`}>What Is Music?</h2>
+            <p className="text-xs text-gray-500 font-bold uppercase tracking-widest">{t.exhibition[language]}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <button onClick={toggleTheme} className={`p-2 rounded-full transition-all ${theme === 'dark' ? 'bg-white/5 text-yellow-400' : 'bg-slate-100 text-slate-700'}`}>
+          <button onClick={onPrevious} className={`flex items-center gap-1 px-3 py-2 rounded-full font-bold transition-all ${theme === 'dark' ? 'bg-[#251848] text-[#E8DCFF] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}>
+            <span className="material-symbols-outlined">chevron_left</span>
+            <span className="hidden sm:inline">{t.prevModule[language]}</span>
+          </button>
+          <button onClick={toggleTheme} className={`p-2 rounded-full transition-all ${theme === 'dark' ? 'bg-[#251848] text-[#FFDE59] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}>
             <span className="material-symbols-outlined text-sm">{theme === 'dark' ? 'light_mode' : 'dark_mode'}</span>
           </button>
-          <button onClick={onBack} className={`flex items-center gap-2 px-4 py-2 rounded-full font-bold transition-all ${theme === 'dark' ? 'bg-white/5 text-white hover:bg-white/10' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}`}>
-            <span className="material-symbols-outlined">arrow_back</span>
-            <span>{t.backToMenu[language]}</span>
+          <button onClick={onNext} className={`flex items-center gap-1 px-3 py-2 rounded-full font-bold transition-all ${theme === 'dark' ? 'bg-[#251848] text-[#E8DCFF] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}>
+            <span className="hidden sm:inline">{t.nextModule[language]}</span>
+            <span className="material-symbols-outlined">chevron_right</span>
           </button>
         </div>
       </header>
 
       <main className="flex flex-1 flex-col overflow-hidden lg:flex-row">
-        <aside className={`flex w-full flex-col gap-6 border-r p-6 lg:w-[320px] lg:p-8 transition-colors ${theme === 'dark' ? 'bg-[#0a1118] border-white/5' : 'bg-white border-slate-200'}`}>
+        <aside className={`flex w-full flex-col gap-6 border-r p-6 lg:w-[320px] lg:p-8 transition-colors ${theme === 'dark' ? 'bg-[#0F0A1A] border-[#251848]' : 'bg-white border-primary/10'}`}>
           <div className="flex flex-col gap-2">
-            <div className="inline-flex w-fit items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-bold uppercase tracking-wide text-primary">Module 01</div>
-            <h1 className={`text-4xl font-black leading-tight ${theme === 'dark' ? 'text-white' : 'text-[#0d191b]'}`}>
+            <div className="inline-flex w-fit items-center rounded-full bg-primary/10 px-3 py-1 text-sm font-bold uppercase tracking-wide text-primary">Module 01</div>
+            <h1 className={`text-4xl font-black leading-tight ${theme === 'dark' ? 'text-[#E8DCFF]' : 'text-[#1A1A1A]'}`}>
               {language === 'EN' ? 'Melody' : 'ทำนอง'}<br/>
               <span className="text-2xl font-bold opacity-30">{language === 'EN' ? 'Tune' : 'ทำนอง'}</span>
             </h1>
@@ -158,9 +168,9 @@ const MelodyModule: React.FC<MelodyModuleProps> = ({ onBack, language, theme, to
           </div>
           <div className="h-px w-full bg-gray-100/10"></div>
           
-          <div className={`rounded-xl border p-4 ${theme === 'dark' ? 'bg-white/5 border-white/10' : 'bg-slate-50 border-slate-200'}`}>
+          <div className={`rounded-xl border p-4 ${theme === 'dark' ? 'bg-[#1A1030] border-[#251848]' : 'bg-primary/5 border-primary/10'}`}>
             <div className="flex items-center justify-between mb-2">
-              <span className={`text-sm font-bold ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>{t.showGuides[language]}</span>
+              <span className={`text-sm font-bold ${theme === 'dark' ? 'text-[#E8DCFF]' : 'text-[#1A1A1A]'}`}>{t.showGuides[language]}</span>
               <label className="relative flex cursor-pointer items-center">
                 <input type="checkbox" checked={showGuides} onChange={(e) => setShowGuides(e.target.checked)} className="peer sr-only" />
                 <div className="h-6 w-11 rounded-full bg-gray-200 peer-checked:bg-primary transition-colors after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-all peer-checked:after:translate-x-full"></div>
@@ -168,17 +178,17 @@ const MelodyModule: React.FC<MelodyModuleProps> = ({ onBack, language, theme, to
             </div>
           </div>
 
-          <div className={`rounded-xl border p-4 ${theme === 'dark' ? 'bg-white/5 border-white/10' : 'bg-slate-50 border-slate-200'}`}>
+          <div className={`rounded-xl border p-4 ${theme === 'dark' ? 'bg-[#1A1030] border-[#251848]' : 'bg-primary/5 border-primary/10'}`}>
             <div className="flex items-center justify-between mb-3">
-              <span className={`text-sm font-bold ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`}>{t.playbackSpeed[language]}</span>
-              <span className={`rounded px-2 py-0.5 text-xs font-bold ${theme === 'dark' ? 'bg-white/10 text-white' : 'bg-white text-slate-700'}`}>{speed.toFixed(1)}x</span>
+              <span className={`text-sm font-bold ${theme === 'dark' ? 'text-[#E8DCFF]' : 'text-[#1A1A1A]'}`}>{t.playbackSpeed[language]}</span>
+              <span className={`rounded px-2 py-0.5 text-sm font-bold ${theme === 'dark' ? 'bg-white/10 text-white' : 'bg-white text-slate-700'}`}>{speed.toFixed(1)}x</span>
             </div>
             <input type="range" min="0.5" max="3" step="0.1" value={speed} onChange={(e) => setSpeed(parseFloat(e.target.value))} className="w-full accent-primary" />
           </div>
         </aside>
 
-        <section className={`relative flex-1 overflow-hidden stage-grid ${theme === 'dark' ? 'bg-[#0a1118]' : 'bg-[#f6f8f8]'}`}>
-          <div className={`absolute left-1/2 top-6 z-10 flex -translate-x-1/2 items-center gap-2 rounded-full p-1.5 shadow-xl ${theme === 'dark' ? 'bg-[#1a2b2e]' : 'bg-white'}`}>
+        <section className={`relative flex-1 overflow-hidden stage-grid ${theme === 'dark' ? 'bg-[#0F0A1A]' : 'bg-background-light'}`}>
+          <div className={`absolute left-1/2 top-6 z-10 flex -translate-x-1/2 items-center gap-2 rounded-full p-1.5 shadow-xl ${theme === 'dark' ? 'bg-[#1A1030]' : 'bg-white'}`}>
             <button className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors ${!isPlaying ? 'bg-primary text-white' : 'text-gray-400 hover:bg-white/10'}`}>
               <span className="material-symbols-outlined">edit</span>
             </button>
@@ -194,7 +204,7 @@ const MelodyModule: React.FC<MelodyModuleProps> = ({ onBack, language, theme, to
           <div className="relative flex h-full w-full items-center justify-center">
             <svg ref={canvasRef} viewBox="0 0 1000 400" className="h-[80%] w-[90%] overflow-visible cursor-crosshair touch-none" onMouseDown={handleStart} onMouseMove={handleMove} onMouseUp={handleEnd} onTouchStart={handleStart} onTouchMove={handleMove} onTouchEnd={handleEnd}>
               {showGuides && (
-                <g className={`${theme === 'dark' ? 'text-white/5' : 'text-slate-200'}`} stroke="currentColor" strokeDasharray="4 4">
+                <g className={`${theme === 'dark' ? 'text-white/5' : 'text-primary/30'}`} stroke="currentColor" strokeDasharray="4 4">
                   <line x1="0" y1="50" x2="1000" y2="50" />
                   <line x1="0" y1="200" x2="1000" y2="200" />
                   <line x1="0" y1="350" x2="1000" y2="350" />
@@ -202,10 +212,10 @@ const MelodyModule: React.FC<MelodyModuleProps> = ({ onBack, language, theme, to
               )}
               {pathD && (
                 <>
-                  <path d={pathD} fill="none" stroke="rgba(19, 200, 236, 0.2)" strokeWidth="12" strokeLinecap="round" />
-                  <path d={pathD} fill="none" stroke="#13c8ec" strokeWidth="6" strokeLinecap="round" className="drop-shadow-lg" />
+                  <path d={pathD} fill="none" stroke="rgba(155, 95, 227, 0.2)" strokeWidth="12" strokeLinecap="round" />
+                  <path d={pathD} fill="none" stroke="#F5CE30" strokeWidth="6" strokeLinecap="round" className="drop-shadow-lg" />
                   {isPlaying && playheadPoint.x !== -100 && (
-                    <circle cx={playheadPoint.x} cy={playheadPoint.y} r="10" fill="white" stroke="#13c8ec" strokeWidth="4" className="shadow-lg" />
+                    <circle cx={playheadPoint.x} cy={playheadPoint.y} r="10" fill="white" stroke="#9B5FE3" strokeWidth="4" className="shadow-lg" />
                   )}
                 </>
               )}

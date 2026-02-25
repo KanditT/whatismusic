@@ -11,7 +11,7 @@ export const MODULES: ModuleData[] = [
       EN: 'Pitch moves up and down over time.', 
       TH: 'ระดับเสียงเคลื่อนที่ขึ้นและลงตามเวลา' 
     },
-    color: '#13c8ec'
+    color: '#9B5FE3'
   },
   {
     id: ModuleId.RHYTHM,
@@ -55,7 +55,7 @@ export const MODULES: ModuleData[] = [
       EN: 'Layer notes to build texture.', 
       TH: 'วางตัวโน้ตซ้อนกันเพื่อสร้างเสียงประสาน' 
     },
-    color: '#13c8ec'
+    color: '#B87AFF'
   }
 ];
 
@@ -90,5 +90,7 @@ export const TRANSLATIONS: Record<string, Record<Language, string>> = {
   playVoice: { EN: 'PLAY VOICE', TH: 'เล่นเสียง' },
   stopVoice: { EN: 'STOP VOICE', TH: 'หยุดเสียง' },
   voiceHint: { EN: 'Record your voice and see how tempo changes its speed and pitch!', TH: 'บันทึกเสียงของคุณและดูว่าเทมโปเปลี่ยนความเร็วและระดับเสียงอย่างไร!' },
-  metronomeSound: { EN: 'Metronome Tick', TH: 'เสียงจังหวะพื้นฐาน' }
+  metronomeSound: { EN: 'Metronome Tick', TH: 'เสียงจังหวะพื้นฐาน' },
+  prevModule: { EN: 'Prev', TH: 'ก่อนหน้า' },
+  nextModule: { EN: 'Next', TH: 'ถัดไป' }
 };
