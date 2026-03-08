@@ -120,122 +120,124 @@ const RhythmModule: React.FC<RhythmModuleProps> = ({ onBack, onNext, onPrevious,
     <div className={`flex h-screen w-full flex-col transition-colors duration-500 ${theme === 'dark' ? 'bg-[#0F0A1A]' : 'bg-background-light'} overflow-hidden font-display`}>
       <header className={`flex items-center justify-between border-b px-6 py-4 z-20 transition-colors ${theme === 'dark' ? 'bg-[#1A1030] border-[#251848]' : 'bg-white border-primary/10'}`}>
         <div className="flex items-center gap-4">
-          <button onClick={onBack} className={`flex items-center gap-2 px-4 py-2 rounded-full font-bold transition-all ${theme === 'dark' ? 'bg-[#251848] text-[#E8DCFF] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}>
-            <span className="material-symbols-outlined">arrow_back</span>
+          <button onClick={onBack} className={`flex items-center gap-2 px-5 py-2.5 rounded-full font-bold transition-all text-lg ${theme === 'dark' ? 'bg-[#251848] text-[#E8DCFF] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}>
+            <span className="material-symbols-outlined text-xl">arrow_back</span>
             <span className="hidden sm:inline">{t.backToMenu[language]}</span>
           </button>
-          <div className="hidden sm:flex size-10 rounded-full bg-primary/10 text-primary items-center justify-center">
-            <span className="material-symbols-outlined">music_note</span>
+          <div className="hidden sm:flex size-12 rounded-full bg-primary/10 text-primary items-center justify-center">
+            <span className="material-symbols-outlined text-2xl">music_note</span>
           </div>
           <div className="hidden md:block">
-            <h2 className={`text-lg font-bold ${theme === 'dark' ? 'text-[#E8DCFF]' : 'text-[#1A1A1A]'}`}>What Is Music?</h2>
-            <p className="text-xs text-gray-500 font-bold uppercase tracking-widest">{t.exhibition[language]}</p>
+            <h2 className={`text-xl font-bold ${theme === 'dark' ? 'text-[#E8DCFF]' : 'text-[#1A1A1A]'}`}>What Is Music?</h2>
+            <p className="text-sm text-gray-500 font-bold uppercase tracking-widest">{t.exhibition[language]}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <button 
             onClick={() => setShowGuideModal(true)} 
-            className={`flex items-center justify-center size-10 rounded-full font-bold transition-all ${theme === 'dark' ? 'bg-[#251848] text-[#FFDE59] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}
+            className={`flex items-center justify-center size-12 rounded-full font-bold transition-all ${theme === 'dark' ? 'bg-[#251848] text-[#FFDE59] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}
           >
-            <span className="material-symbols-outlined text-sm">help</span>
+            <span className="material-symbols-outlined text-base">help</span>
           </button>
 
-          <button onClick={onPrevious} className={`flex items-center gap-1 px-3 py-2 rounded-full font-bold transition-all ${theme === 'dark' ? 'bg-[#251848] text-[#E8DCFF] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}>
-            <span className="material-symbols-outlined">chevron_left</span>
+          <button onClick={onPrevious} className={`flex items-center gap-2 px-5 py-2.5 rounded-full font-bold transition-all text-lg ${theme === 'dark' ? 'bg-[#251848] text-[#E8DCFF] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}>
+            <span className="material-symbols-outlined text-xl">chevron_left</span>
             <span className="hidden sm:inline">{t.prevModule[language]}</span>
           </button>
           
-          <button onClick={onNext} className={`flex items-center gap-1 px-3 py-2 rounded-full font-bold transition-all ${theme === 'dark' ? 'bg-[#251848] text-[#E8DCFF] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}>
+          <button onClick={onNext} className={`flex items-center gap-2 px-5 py-2.5 rounded-full font-bold transition-all text-lg ${theme === 'dark' ? 'bg-[#251848] text-[#E8DCFF] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}>
             <span className="hidden sm:inline">{t.nextModule[language]}</span>
-            <span className="material-symbols-outlined">chevron_right</span>
+            <span className="material-symbols-outlined text-xl">chevron_right</span>
           </button>
         </div>
       </header>
 
-      <main className="flex-1 flex flex-col items-center justify-center p-8">
-        <div className="w-full max-w-5xl flex flex-col gap-8">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 relative">
-            <div className="relative z-10">
-              <div className="inline-flex w-fit items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-sm font-bold uppercase tracking-wide text-primary mb-2">
-                Module 02
-               
-              </div>
-              <h1 className={`text-5xl font-black ${theme === 'dark' ? 'text-[#E8DCFF]' : 'text-[#1A1A1A]'}`}>
-                {language === 'EN' ? 'Rhythm' : 'จังหวะ'} <span className="text-2xl font-bold opacity-30">(จังหวะ)</span>
-              </h1>
-              <p className={`text-lg font-medium mt-1 ${theme === 'dark' ? 'text-[#9B7EC8]' : 'text-primary'}`}>
-                {language === 'EN' ? 'Design a looping pattern.' : 'ออกแบบลวดลายจังหวะแบบวนซ้ำ'}
-              </p>
+      <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+        <aside className={`w-full lg:w-[500px] border-r p-12 flex flex-col gap-10 shadow-2xl z-10 transition-colors overflow-y-auto ${theme === 'dark' ? 'bg-[#1A1030] border-[#251848]' : 'bg-white border-primary/10'}`}>
+          <div>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary w-fit text-base font-black uppercase tracking-widest mb-3">
+              Module 02
             </div>
-            <button onClick={() => { initAudio(); setIsPlaying(!isPlaying); }} className={`group flex items-center gap-4 px-10 py-5 rounded-2xl font-black text-xl transition-all shadow-xl active:scale-95 ${isPlaying ? 'bg-red-500 text-white shadow-red-500/30' : 'bg-primary text-white shadow-primary/30'}`}>
-              <span className="material-symbols-outlined text-3xl">{isPlaying ? 'pause_circle' : 'play_circle'}</span>
+            <h1 className={`text-6xl md:text-7xl font-black ${theme === 'dark' ? 'text-[#E8DCFF]' : 'text-[#1A1A1A]'}`}>
+              {language === 'EN' ? 'Rhythm' : 'จังหวะ'} <span className="text-3xl font-bold opacity-30">(จังหวะ)</span>
+            </h1>
+            <p className={`text-xl font-medium mt-2 ${theme === 'dark' ? 'text-[#9B7EC8]' : 'text-primary'}`}>
+              {language === 'EN' ? 'Design a looping pattern.' : 'ออกแบบลวดลายจังหวะแบบวนซ้ำ'}
+            </p>
+          </div>
+          
+          <div className="flex flex-col gap-10 mt-2">
+            <button onClick={() => { initAudio(); setIsPlaying(!isPlaying); }} className={`group flex items-center justify-center gap-4 px-12 py-6 rounded-[2rem] font-black text-2xl transition-all shadow-xl active:scale-95 w-full ${isPlaying ? 'bg-red-500 text-white shadow-red-500/30' : 'bg-primary text-white shadow-primary/30'}`}>
+              <span className="material-symbols-outlined text-4xl">{isPlaying ? 'pause_circle' : 'play_circle'}</span>
               {isPlaying ? t.stopLoop[language] : t.playLoop[language]}
             </button>
-          </div>
 
-          <div className={`rounded-[3rem] shadow-2xl border p-8 md:p-16 grid grid-cols-1 lg:grid-cols-2 gap-12 relative overflow-hidden transition-colors ${theme === 'dark' ? 'bg-[#1A1030] border-[#251848]' : 'bg-white border-primary/10'}`}>
-            <div className="flex justify-center items-center">
-              <div className="flex w-full max-w-[560px] gap-4">
-                <div className="flex flex-col justify-end pb-6 pt-12 text-right pr-2">
-                  <div className={`flex flex-col items-end gap-1 flex-1 justify-center ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
-                    <span className="material-symbols-outlined text-2xl">radio_button_checked</span>
-                    <span className="text-xs uppercase font-black tracking-wider">Kick</span>
-                  </div>
-                  <div className={`flex flex-col items-end gap-1 flex-1 justify-center ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
-                    <span className="material-symbols-outlined text-2xl">blur_on</span>
-                    <span className="text-xs uppercase font-black tracking-wider">Snare</span>
-                  </div>
-                  <div className={`flex flex-col items-end gap-1 flex-1 justify-center ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
-                    <span className="material-symbols-outlined text-2xl">adjust</span>
-                    <span className="text-xs uppercase font-black tracking-wider">Tom</span>
-                  </div>
-                  <div className={`flex flex-col items-end gap-1 flex-1 justify-center ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
-                    <span className="material-symbols-outlined text-2xl">lens_blur</span>
-                    <span className="text-xs uppercase font-black tracking-wider">Hi-hat</span>
-                  </div>
-                </div>
-                
-                <div className="flex-1 flex flex-col">
-                  {/* Column Labels */}
-                  <div className="grid grid-cols-4 gap-4 px-6 pb-2 text-center">
-                    {[1, 2, 3, 4].map((num) => (
-                      <div key={num} className={`font-black text-lg ${theme === 'dark' ? 'text-[#9B7EC8]' : 'text-primary'}`}>
-                        {num}
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Grid */}
-                  <div className={`flex-1 grid grid-cols-4 gap-4 aspect-square relative p-6 rounded-[2rem] ${theme === 'dark' ? 'bg-[#0F0A1A]' : 'bg-slate-50'}`}>
-                  <div className="absolute top-0 bottom-0 w-2 bg-primary/30 z-20 transition-all duration-200 ease-linear shadow-[0_0_20px_#9B5FE3] rounded-full" style={{ left: `${(activeStep / 4) * 100 + 12.5}%`, transform: 'translateX(-50%)' }}></div>
-                  {grid.map((row, r) => row.map((cell, c) => (
-                    <button key={`${r}-${c}`} onClick={() => toggleCell(r, c)} className={`aspect-square rounded-2xl relative transition-all duration-300 ${cell ? 'bg-primary shadow-[0_0_25px_#9B5FE3] scale-105' : theme === 'dark' ? 'bg-[#251848] border-2 border-[#251848]' : 'bg-white hover:bg-gray-100 border-2 border-gray-100'}`}>
-                      {!cell && <div className={`absolute inset-0 m-auto size-2 rounded-full ${theme === 'dark' ? 'bg-white/10' : 'bg-gray-200'}`}></div>}
-                      {cell && activeStep === c && isPlaying && <div className="absolute inset-0 rounded-2xl border-4 border-white ripple-effect"></div>}
-                    </button>
-                  )))}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-col justify-center gap-8">
-              <div className={`p-6 rounded-3xl border transition-colors ${theme === 'dark' ? 'bg-[#0F0A1A] border-[#251848]' : 'bg-slate-50 border-slate-200'}`}>
-                <div className="flex justify-between items-center mb-4">
-                   <h3 className={`font-bold flex items-center gap-2 ${theme === 'dark' ? 'text-[#E8DCFF]' : 'text-[#1A1A1A]'}`}>
-                     <span className="material-symbols-outlined text-primary">speed</span>
+            <div className="flex flex-col justify-center gap-6">
+              <div className={`p-8 rounded-3xl border transition-colors ${theme === 'dark' ? 'bg-[#0F0A1A] border-[#251848]' : 'bg-slate-50 border-slate-200'}`}>
+                <div className="flex justify-between items-center mb-6">
+                   <h3 className={`font-bold text-xl flex items-center gap-3 ${theme === 'dark' ? 'text-[#E8DCFF]' : 'text-[#1A1A1A]'}`}>
+                     <span className="material-symbols-outlined text-3xl text-primary">speed</span>
                      Tempo: <span className="text-primary">{tempo} BPM</span>
                    </h3>
                 </div>
-                <input type="range" min="60" max="200" value={tempo} onChange={(e) => setTempo(parseInt(e.target.value))} className="w-full h-3 bg-yellow-300/80 rounded-full accent-primary appearance-none cursor-pointer border border-white/10" />
+                <input type="range" min="60" max="200" value={tempo} onChange={(e) => setTempo(parseInt(e.target.value))} className="w-full h-4 bg-yellow-300/80 rounded-full accent-primary appearance-none cursor-pointer border border-white/10" />
               </div>
-              <button onClick={() => setGrid(Array(4).fill(null).map(() => Array(4).fill(false)))} className={`w-full py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 ${theme === 'dark' ? 'bg-[#251848] text-[#9B7EC8] hover:bg-red-500/10 hover:text-red-500' : 'bg-gray-100 text-gray-500 hover:bg-red-50 hover:text-red-500'}`}>
-                <span className="material-symbols-outlined">delete_sweep</span>
+              <button onClick={() => setGrid(Array(4).fill(null).map(() => Array(4).fill(false)))} className={`w-full py-5 rounded-2xl font-bold transition-all text-xl flex items-center justify-center gap-3 ${theme === 'dark' ? 'bg-[#251848] text-[#9B7EC8] hover:bg-red-500/10 hover:text-red-500' : 'bg-gray-100 text-gray-500 hover:bg-red-50 hover:text-red-500'}`}>
+                <span className="material-symbols-outlined text-2xl">delete_sweep</span>
                 {t.clear[language]}
               </button>
             </div>
           </div>
-        </div>
+        </aside>
+
+        <section className={`flex-1 flex flex-col items-center justify-center relative overflow-hidden transition-colors ${theme === 'dark' ? 'bg-[#0F0A1A]' : 'bg-background-light'} stage-grid p-8`}>
+           <div className={`w-full max-w-4xl p-10 md:p-16 rounded-[3rem] shadow-2xl border transition-colors ${theme === 'dark' ? 'bg-[#1A1030] border-[#251848]' : 'bg-white border-primary/10'}`}>
+              <div className="flex justify-center items-center">
+                <div className="flex w-full gap-6">
+                  <div className="flex flex-col justify-end pb-6 pt-12 text-right pr-4">
+                    <div className={`flex flex-col items-end gap-1 flex-1 justify-center ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                      <span className="material-symbols-outlined text-3xl">radio_button_checked</span>
+                      <span className="text-sm uppercase font-black tracking-wider">Kick</span>
+                    </div>
+                    <div className={`flex flex-col items-end gap-1 flex-1 justify-center ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                      <span className="material-symbols-outlined text-3xl">blur_on</span>
+                      <span className="text-sm uppercase font-black tracking-wider">Snare</span>
+                    </div>
+                    <div className={`flex flex-col items-end gap-1 flex-1 justify-center ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                      <span className="material-symbols-outlined text-3xl">adjust</span>
+                      <span className="text-sm uppercase font-black tracking-wider">Tom</span>
+                    </div>
+                    <div className={`flex flex-col items-end gap-1 flex-1 justify-center ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                      <span className="material-symbols-outlined text-3xl">lens_blur</span>
+                      <span className="text-sm uppercase font-black tracking-wider">Hi-hat</span>
+                    </div>
+                  </div>
+                  
+                  <div className="flex-1 flex flex-col">
+                    {/* Column Labels */}
+                    <div className="grid grid-cols-4 gap-8 px-8 pb-4 text-center">
+                      {[1, 2, 3, 4].map((num) => (
+                        <div key={num} className={`font-black text-2xl ${theme === 'dark' ? 'text-[#9B7EC8]' : 'text-primary'}`}>
+                          {num}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Grid */}
+                    <div className={`flex-1 grid grid-cols-4 gap-8 aspect-square relative p-8 rounded-[3rem] ${theme === 'dark' ? 'bg-[#0F0A1A]' : 'bg-slate-50'}`}>
+                    <div className="absolute top-0 bottom-0 w-3 bg-primary/30 z-20 transition-all duration-200 ease-linear shadow-[0_0_20px_#9B5FE3] rounded-full" style={{ left: `${(activeStep / 4) * 100 + 12.5}%`, transform: 'translateX(-50%)' }}></div>
+                    {grid.map((row, r) => row.map((cell, c) => (
+                      <button key={`${r}-${c}`} onClick={() => toggleCell(r, c)} className={`aspect-square rounded-[1.5rem] relative transition-all duration-300 ${cell ? 'bg-primary shadow-[0_0_25px_#9B5FE3] scale-105' : theme === 'dark' ? 'bg-[#251848] border-2 border-[#251848]' : 'bg-white hover:bg-gray-100 border-2 border-gray-100'}`}>
+                        {!cell && <div className={`absolute inset-0 m-auto size-3 rounded-full ${theme === 'dark' ? 'bg-white/10' : 'bg-gray-200'}`}></div>}
+                        {cell && activeStep === c && isPlaying && <div className="absolute inset-0 rounded-[1.5rem] border-4 border-white ripple-effect"></div>}
+                      </button>
+                    )))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+           </div>
+        </section>
       </main>
 
       <GuideModal 
