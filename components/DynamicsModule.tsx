@@ -1,8 +1,9 @@
 
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
-import { Language, Theme } from '../types';
-import { TRANSLATIONS } from '../constants';
+import { Language, Theme, ModuleId } from '../types';
+import { TRANSLATIONS, MODULES } from '../constants';
+import GuideModal from './GuideModal';
 
 interface DynamicsModuleProps {
   onBack: () => void;
@@ -11,11 +12,13 @@ interface DynamicsModuleProps {
   language: Language;
   theme: Theme;
   toggleTheme: () => void;
+  globalVolume: number;
 }
 
-const DynamicsModule: React.FC<DynamicsModuleProps> = ({ onBack, onNext, onPrevious, language, theme, toggleTheme }) => {
+const DynamicsModule: React.FC<DynamicsModuleProps> = ({ onBack, onNext, onPrevious, language, theme, toggleTheme, globalVolume }) => {
   const t = TRANSLATIONS;
   const [volume, setVolume] = useState(70);
+  const [showGuideModal, setShowGuideModal] = useState(true);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const oscRef = useRef<OscillatorNode | null>(null);
   const filterRef = useRef<BiquadFilterNode | null>(null);
@@ -43,10 +46,11 @@ const DynamicsModule: React.FC<DynamicsModuleProps> = ({ onBack, onNext, onPrevi
   useEffect(() => {
     if (gainRef.current && filterRef.current && audioCtxRef.current) {
         const v = volume / 100;
-        gainRef.current.gain.setTargetAtTime(v * 0.3, audioCtxRef.current.currentTime, 0.05);
+        const gV = globalVolume / 100;
+        gainRef.current.gain.setTargetAtTime(v * 0.3 * gV, audioCtxRef.current.currentTime, 0.05);
         filterRef.current.frequency.setTargetAtTime(200 + (v * 2000), audioCtxRef.current.currentTime, 0.05);
     }
-  }, [volume]);
+  }, [volume, globalVolume]);
 
   useEffect(() => {
     return () => {
@@ -99,13 +103,18 @@ const DynamicsModule: React.FC<DynamicsModuleProps> = ({ onBack, onNext, onPrevi
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <button 
+            onClick={() => setShowGuideModal(true)} 
+            className={`flex items-center justify-center size-10 rounded-full font-bold transition-all ${theme === 'dark' ? 'bg-[#251848] text-[#FFDE59] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}
+          >
+            <span className="material-symbols-outlined text-sm">help</span>
+          </button>
+        
           <button onClick={onPrevious} className={`flex items-center gap-1 px-3 py-2 rounded-full font-bold transition-all ${theme === 'dark' ? 'bg-[#251848] text-[#E8DCFF] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}>
             <span className="material-symbols-outlined">chevron_left</span>
             <span className="hidden sm:inline">{t.prevModule[language]}</span>
           </button>
-          <button onClick={toggleTheme} className={`p-2 rounded-full transition-all ${theme === 'dark' ? 'bg-[#251848] text-[#FFDE59] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}>
-            <span className="material-symbols-outlined text-sm">{theme === 'dark' ? 'light_mode' : 'dark_mode'}</span>
-          </button>
+        
           <button onClick={onNext} className={`flex items-center gap-1 px-3 py-2 rounded-full font-bold transition-all ${theme === 'dark' ? 'bg-[#251848] text-[#E8DCFF] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}>
             <span className="hidden sm:inline">{t.nextModule[language]}</span>
             <span className="material-symbols-outlined">chevron_right</span>
@@ -160,6 +169,15 @@ const DynamicsModule: React.FC<DynamicsModuleProps> = ({ onBack, onNext, onPrevi
           </div>
         </section>
       </main>
+
+      <GuideModal 
+        isOpen={showGuideModal}
+        onClose={() => setShowGuideModal(false)}
+        title={MODULES.find(m => m.id === ModuleId.DYNAMICS)!.guide.title}
+        instructions={MODULES.find(m => m.id === ModuleId.DYNAMICS)!.guide.instructions}
+        language={language}
+        theme={theme}
+      />
     </div>
   );
 };

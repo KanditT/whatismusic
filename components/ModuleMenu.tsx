@@ -10,9 +10,11 @@ interface ModuleMenuProps {
   setLanguage: (lang: Language) => void;
   theme: Theme;
   toggleTheme: () => void;
+  globalVolume: number;
+  setGlobalVolume: (vol: number) => void;
 }
 
-const ModuleMenu: React.FC<ModuleMenuProps> = ({ onSelectModule, language, setLanguage, theme, toggleTheme }) => {
+const ModuleMenu: React.FC<ModuleMenuProps> = ({ onSelectModule, language, setLanguage, theme, toggleTheme, globalVolume, setGlobalVolume }) => {
   const t = TRANSLATIONS;
 
   return (
@@ -34,7 +36,7 @@ const ModuleMenu: React.FC<ModuleMenuProps> = ({ onSelectModule, language, setLa
             <p className={`text-2xl font-bold opacity-30 ${theme === 'dark' ? 'text-[#E8DCFF]' : 'text-[#1A1A1A]'}`}>(ดนตรีคืออะไร?)</p>
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row items-center gap-4 mt-2">
             <div className={`flex overflow-hidden rounded-full p-1 border backdrop-blur-md ${theme === 'dark' ? 'bg-white/5 border-[#251848]' : 'bg-white border-primary/20'}`}>
               <button
                 onClick={() => setLanguage('EN')}
@@ -56,6 +58,20 @@ const ModuleMenu: React.FC<ModuleMenuProps> = ({ onSelectModule, language, setLa
             >
               <span className="material-symbols-outlined">{theme === 'dark' ? 'light_mode' : 'dark_mode'}</span>
             </button>
+
+            {/* Global Volume Control */}
+            <div className={`flex items-center gap-4 px-6 py-2 rounded-full border backdrop-blur-md w-64 ${theme === 'dark' ? 'bg-[#1A1030]/80 border-[#251848]' : 'bg-white/80 border-primary/20'}`}>
+              <span className={`material-symbols-outlined text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>volume_down</span>
+              <input 
+                type="range" 
+                min="0" 
+                max="100" 
+                value={globalVolume} 
+                onChange={(e) => setGlobalVolume(parseInt(e.target.value))}
+                className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary"
+              />
+              <span className={`text-xs font-bold w-8 text-right ${theme === 'dark' ? 'text-[#E8DCFF]' : 'text-primary'}`}>{globalVolume}%</span>
+            </div>
           </div>
         </header>
 

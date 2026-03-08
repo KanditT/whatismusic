@@ -1,8 +1,9 @@
 
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
-import { Language, Theme } from '../types';
-import { TRANSLATIONS } from '../constants';
+import { Language, Theme, ModuleId } from '../types';
+import { TRANSLATIONS, MODULES } from '../constants';
+import GuideModal from './GuideModal';
 
 interface RhythmModuleProps {
   onBack: () => void;
@@ -11,14 +12,16 @@ interface RhythmModuleProps {
   language: Language;
   theme: Theme;
   toggleTheme: () => void;
+  globalVolume: number;
 }
 
-const RhythmModule: React.FC<RhythmModuleProps> = ({ onBack, onNext, onPrevious, language, theme, toggleTheme }) => {
+const RhythmModule: React.FC<RhythmModuleProps> = ({ onBack, onNext, onPrevious, language, theme, toggleTheme, globalVolume }) => {
   const t = TRANSLATIONS;
   const [grid, setGrid] = useState<boolean[][]>(Array(4).fill(null).map(() => Array(4).fill(false)));
   const [tempo, setTempo] = useState(120);
   const [activeStep, setActiveStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [showGuideModal, setShowGuideModal] = useState(true);
 
   const audioCtxRef = useRef<AudioContext | null>(null);
 
@@ -37,12 +40,13 @@ const RhythmModule: React.FC<RhythmModuleProps> = ({ onBack, onNext, onPrevious,
     osc.connect(gain);
     gain.connect(ctx.destination);
     const now = ctx.currentTime;
+    const vol = globalVolume / 100;
 
     switch(row) {
       case 0: // Kick
         osc.frequency.setValueAtTime(150, now);
         osc.frequency.exponentialRampToValueAtTime(0.01, now + 0.5);
-        gain.gain.setValueAtTime(1, now);
+        gain.gain.setValueAtTime(1 * vol, now);
         gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
         osc.start(now);
         osc.stop(now + 0.5);
@@ -57,7 +61,7 @@ const RhythmModule: React.FC<RhythmModuleProps> = ({ onBack, onNext, onPrevious,
         const noiseGain = ctx.createGain();
         noise.connect(noiseGain);
         noiseGain.connect(ctx.destination);
-        noiseGain.gain.setValueAtTime(0.3, now);
+        noiseGain.gain.setValueAtTime(0.3 * vol, now);
         noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
         noise.start(now);
         noise.stop(now + 0.1);
@@ -66,7 +70,7 @@ const RhythmModule: React.FC<RhythmModuleProps> = ({ onBack, onNext, onPrevious,
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(200, now);
         osc.frequency.exponentialRampToValueAtTime(50, now + 0.2);
-        gain.gain.setValueAtTime(0.5, now);
+        gain.gain.setValueAtTime(0.5 * vol, now);
         gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
         osc.start(now);
         osc.stop(now + 0.2);
@@ -78,7 +82,7 @@ const RhythmModule: React.FC<RhythmModuleProps> = ({ onBack, onNext, onPrevious,
         hhOsc.frequency.setValueAtTime(10000, now);
         hhOsc.connect(hhGain);
         hhGain.connect(ctx.destination);
-        hhGain.gain.setValueAtTime(0.05, now);
+        hhGain.gain.setValueAtTime(0.05 * vol, now);
         hhGain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
         hhOsc.start(now);
         hhOsc.stop(now + 0.05);
@@ -129,13 +133,18 @@ const RhythmModule: React.FC<RhythmModuleProps> = ({ onBack, onNext, onPrevious,
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <button 
+            onClick={() => setShowGuideModal(true)} 
+            className={`flex items-center justify-center size-10 rounded-full font-bold transition-all ${theme === 'dark' ? 'bg-[#251848] text-[#FFDE59] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}
+          >
+            <span className="material-symbols-outlined text-sm">help</span>
+          </button>
+
           <button onClick={onPrevious} className={`flex items-center gap-1 px-3 py-2 rounded-full font-bold transition-all ${theme === 'dark' ? 'bg-[#251848] text-[#E8DCFF] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}>
             <span className="material-symbols-outlined">chevron_left</span>
             <span className="hidden sm:inline">{t.prevModule[language]}</span>
           </button>
-          <button onClick={toggleTheme} className={`p-2 rounded-full transition-all ${theme === 'dark' ? 'bg-[#251848] text-[#FFDE59] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}>
-            <span className="material-symbols-outlined text-sm">{theme === 'dark' ? 'light_mode' : 'dark_mode'}</span>
-          </button>
+          
           <button onClick={onNext} className={`flex items-center gap-1 px-3 py-2 rounded-full font-bold transition-all ${theme === 'dark' ? 'bg-[#251848] text-[#E8DCFF] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}>
             <span className="hidden sm:inline">{t.nextModule[language]}</span>
             <span className="material-symbols-outlined">chevron_right</span>
@@ -166,14 +175,47 @@ const RhythmModule: React.FC<RhythmModuleProps> = ({ onBack, onNext, onPrevious,
 
           <div className={`rounded-[3rem] shadow-2xl border p-8 md:p-16 grid grid-cols-1 lg:grid-cols-2 gap-12 relative overflow-hidden transition-colors ${theme === 'dark' ? 'bg-[#1A1030] border-[#251848]' : 'bg-white border-primary/10'}`}>
             <div className="flex justify-center items-center">
-              <div className={`grid grid-cols-4 gap-4 w-full max-w-[480px] aspect-square relative p-6 rounded-[2rem] ${theme === 'dark' ? 'bg-[#0F0A1A]' : 'bg-slate-50'}`}>
-                <div className="absolute top-0 bottom-0 w-2 bg-primary/30 z-20 transition-all duration-200 ease-linear shadow-[0_0_20px_#9B5FE3] rounded-full" style={{ left: `${(activeStep / 4) * 100 + 12.5}%`, transform: 'translateX(-50%)' }}></div>
-                {grid.map((row, r) => row.map((cell, c) => (
-                  <button key={`${r}-${c}`} onClick={() => toggleCell(r, c)} className={`aspect-square rounded-2xl relative transition-all duration-300 ${cell ? 'bg-primary shadow-[0_0_25px_#9B5FE3] scale-105' : theme === 'dark' ? 'bg-[#251848] border-2 border-[#251848]' : 'bg-white hover:bg-gray-100 border-2 border-gray-100'}`}>
-                    {!cell && <div className={`absolute inset-0 m-auto size-2 rounded-full ${theme === 'dark' ? 'bg-white/10' : 'bg-gray-200'}`}></div>}
-                    {cell && activeStep === c && isPlaying && <div className="absolute inset-0 rounded-2xl border-4 border-white ripple-effect"></div>}
-                  </button>
-                )))}
+              <div className="flex w-full max-w-[560px] gap-4">
+                <div className="flex flex-col justify-end pb-6 pt-12 text-right pr-2">
+                  <div className={`flex flex-col items-end gap-1 flex-1 justify-center ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                    <span className="material-symbols-outlined text-2xl">radio_button_checked</span>
+                    <span className="text-xs uppercase font-black tracking-wider">Kick</span>
+                  </div>
+                  <div className={`flex flex-col items-end gap-1 flex-1 justify-center ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                    <span className="material-symbols-outlined text-2xl">blur_on</span>
+                    <span className="text-xs uppercase font-black tracking-wider">Snare</span>
+                  </div>
+                  <div className={`flex flex-col items-end gap-1 flex-1 justify-center ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                    <span className="material-symbols-outlined text-2xl">adjust</span>
+                    <span className="text-xs uppercase font-black tracking-wider">Tom</span>
+                  </div>
+                  <div className={`flex flex-col items-end gap-1 flex-1 justify-center ${theme === 'dark' ? 'text-gray-400' : 'text-gray-500'}`}>
+                    <span className="material-symbols-outlined text-2xl">lens_blur</span>
+                    <span className="text-xs uppercase font-black tracking-wider">Hi-hat</span>
+                  </div>
+                </div>
+                
+                <div className="flex-1 flex flex-col">
+                  {/* Column Labels */}
+                  <div className="grid grid-cols-4 gap-4 px-6 pb-2 text-center">
+                    {[1, 2, 3, 4].map((num) => (
+                      <div key={num} className={`font-black text-lg ${theme === 'dark' ? 'text-[#9B7EC8]' : 'text-primary'}`}>
+                        {num}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Grid */}
+                  <div className={`flex-1 grid grid-cols-4 gap-4 aspect-square relative p-6 rounded-[2rem] ${theme === 'dark' ? 'bg-[#0F0A1A]' : 'bg-slate-50'}`}>
+                  <div className="absolute top-0 bottom-0 w-2 bg-primary/30 z-20 transition-all duration-200 ease-linear shadow-[0_0_20px_#9B5FE3] rounded-full" style={{ left: `${(activeStep / 4) * 100 + 12.5}%`, transform: 'translateX(-50%)' }}></div>
+                  {grid.map((row, r) => row.map((cell, c) => (
+                    <button key={`${r}-${c}`} onClick={() => toggleCell(r, c)} className={`aspect-square rounded-2xl relative transition-all duration-300 ${cell ? 'bg-primary shadow-[0_0_25px_#9B5FE3] scale-105' : theme === 'dark' ? 'bg-[#251848] border-2 border-[#251848]' : 'bg-white hover:bg-gray-100 border-2 border-gray-100'}`}>
+                      {!cell && <div className={`absolute inset-0 m-auto size-2 rounded-full ${theme === 'dark' ? 'bg-white/10' : 'bg-gray-200'}`}></div>}
+                      {cell && activeStep === c && isPlaying && <div className="absolute inset-0 rounded-2xl border-4 border-white ripple-effect"></div>}
+                    </button>
+                  )))}
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -195,6 +237,15 @@ const RhythmModule: React.FC<RhythmModuleProps> = ({ onBack, onNext, onPrevious,
           </div>
         </div>
       </main>
+
+      <GuideModal 
+        isOpen={showGuideModal}
+        onClose={() => setShowGuideModal(false)}
+        title={MODULES.find(m => m.id === ModuleId.RHYTHM)!.guide.title}
+        instructions={MODULES.find(m => m.id === ModuleId.RHYTHM)!.guide.instructions}
+        language={language}
+        theme={theme}
+      />
     </div>
   );
 };

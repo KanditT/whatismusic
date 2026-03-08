@@ -18,6 +18,10 @@ export interface ModuleData {
   icon: string;
   description: Record<Language, string>;
   color: string;
+  guide: {
+    title: Record<Language, string>;
+    instructions: Record<Language, string[]>;
+  };
 }
 
 export interface Point {

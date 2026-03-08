@@ -1,8 +1,9 @@
 
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
-import { Language, Theme } from '../types';
-import { TRANSLATIONS } from '../constants';
+import { Language, Theme, ModuleId } from '../types';
+import { TRANSLATIONS, MODULES } from '../constants';
+import GuideModal from './GuideModal';
 
 interface Note {
   id: string;
@@ -31,11 +32,13 @@ interface HarmonyModuleProps {
   language: Language;
   theme: Theme;
   toggleTheme: () => void;
+  globalVolume: number;
 }
 
-const HarmonyModule: React.FC<HarmonyModuleProps> = ({ onBack, onNext, onPrevious, language, theme, toggleTheme }) => {
+const HarmonyModule: React.FC<HarmonyModuleProps> = ({ onBack, onNext, onPrevious, language, theme, toggleTheme, globalVolume }) => {
   const t = TRANSLATIONS;
   const [activeNotes, setActiveNotes] = useState<string[]>(['c4', 'e4', 'g4']);
+  const [showGuideModal, setShowGuideModal] = useState(true);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const activeOscs = useRef<Record<string, { osc: OscillatorNode, gain: GainNode }>>({});
 
@@ -57,8 +60,10 @@ const HarmonyModule: React.FC<HarmonyModuleProps> = ({ onBack, onNext, onPreviou
     osc.frequency.setValueAtTime(note.freq, ctx.currentTime);
     osc.connect(gain);
     gain.connect(ctx.destination);
+    osc.frequency.setValueAtTime(note.freq, ctx.currentTime);
+    const vol = globalVolume / 100;
     gain.gain.setValueAtTime(0, ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + 0.1);
+    gain.gain.linearRampToValueAtTime(0.12 * vol, ctx.currentTime + 0.1);
     osc.start();
     activeOscs.current[note.id] = { osc, gain };
   };
@@ -79,7 +84,7 @@ const HarmonyModule: React.FC<HarmonyModuleProps> = ({ onBack, onNext, onPreviou
         if (isActive && !isPlaying) startNote(note);
         else if (!isActive && isPlaying) stopNote(note.id);
     });
-  }, [activeNotes]);
+  }, [activeNotes, globalVolume]);
 
   useEffect(() => () => { Object.keys(activeOscs.current).forEach(stopNote); if (audioCtxRef.current) audioCtxRef.current.close(); }, []);
 
@@ -108,13 +113,18 @@ const HarmonyModule: React.FC<HarmonyModuleProps> = ({ onBack, onNext, onPreviou
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <button 
+            onClick={() => setShowGuideModal(true)} 
+            className={`flex items-center justify-center size-10 rounded-full font-bold transition-all ${theme === 'dark' ? 'bg-[#251848] text-[#FFDE59] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}
+          >
+            <span className="material-symbols-outlined text-sm">help</span>
+          </button>
+         
           <button onClick={onPrevious} className={`flex items-center gap-1 px-3 py-2 rounded-full font-bold transition-all ${theme === 'dark' ? 'bg-[#251848] text-[#E8DCFF] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}>
             <span className="material-symbols-outlined">chevron_left</span>
             <span className="hidden sm:inline">{t.prevModule[language]}</span>
           </button>
-          <button onClick={toggleTheme} className={`p-2 rounded-full transition-all ${theme === 'dark' ? 'bg-[#251848] text-[#FFDE59] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}>
-            <span className="material-symbols-outlined text-sm">{theme === 'dark' ? 'light_mode' : 'dark_mode'}</span>
-          </button>
+         
           <button onClick={onNext} className={`flex items-center gap-1 px-3 py-2 rounded-full font-bold transition-all ${theme === 'dark' ? 'bg-[#251848] text-[#E8DCFF] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}>
             <span className="hidden sm:inline">{t.nextModule[language]}</span>
             <span className="material-symbols-outlined">chevron_right</span>
@@ -199,8 +209,17 @@ const HarmonyModule: React.FC<HarmonyModuleProps> = ({ onBack, onNext, onPreviou
                  ))}
               </div>
            </div>
-        </section>
+         </section>
       </main>
+
+      <GuideModal 
+        isOpen={showGuideModal}
+        onClose={() => setShowGuideModal(false)}
+        title={MODULES.find(m => m.id === ModuleId.HARMONY)!.guide.title}
+        instructions={MODULES.find(m => m.id === ModuleId.HARMONY)!.guide.instructions}
+        language={language}
+        theme={theme}
+      />
     </div>
   );
 };

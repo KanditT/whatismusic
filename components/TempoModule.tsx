@@ -1,8 +1,9 @@
 
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
-import { Language, Theme } from '../types';
-import { TRANSLATIONS } from '../constants';
+import { Language, Theme, ModuleId } from '../types';
+import { TRANSLATIONS, MODULES } from '../constants';
+import GuideModal from './GuideModal';
 
 interface TempoModuleProps {
   onBack: () => void;
@@ -11,12 +12,14 @@ interface TempoModuleProps {
   language: Language;
   theme: Theme;
   toggleTheme: () => void;
+  globalVolume: number;
 }
 
-const TempoModule: React.FC<TempoModuleProps> = ({ onBack, onNext, onPrevious, language, theme, toggleTheme }) => {
+const TempoModule: React.FC<TempoModuleProps> = ({ onBack, onNext, onPrevious, language, theme, toggleTheme, globalVolume }) => {
   const t = TRANSLATIONS;
   const [bpm, setBpm] = useState(120);
   const [isTickEnabled, setIsTickEnabled] = useState(true);
+  const [showGuideModal, setShowGuideModal] = useState(true);
   const audioCtxRef = useRef<AudioContext | null>(null);
   
   // Voice Recording State
@@ -49,7 +52,8 @@ const TempoModule: React.FC<TempoModuleProps> = ({ onBack, onNext, onPrevious, l
     
     osc.frequency.setValueAtTime(800, ctx.currentTime);
     osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.1);
-    gain.gain.setValueAtTime(0.05, ctx.currentTime);
+    const vol = globalVolume / 100;
+    gain.gain.setValueAtTime(0.05 * vol, ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
     
     osc.start();
@@ -125,10 +129,13 @@ const TempoModule: React.FC<TempoModuleProps> = ({ onBack, onNext, onPrevious, l
     } else if (recordedBuffer && audioCtxRef.current) {
       initAudio();
       const source = audioCtxRef.current.createBufferSource();
+      const gainNode = audioCtxRef.current.createGain();
+      gainNode.gain.value = globalVolume / 100;
       source.buffer = recordedBuffer;
       source.loop = true;
       source.playbackRate.value = bpm / 120; // Base speed at 120 BPM
-      source.connect(audioCtxRef.current.destination);
+      source.connect(gainNode);
+      gainNode.connect(audioCtxRef.current.destination);
       source.start(0);
       voiceSourceRef.current = source;
       setIsVoicePlaying(true);
@@ -161,13 +168,18 @@ const TempoModule: React.FC<TempoModuleProps> = ({ onBack, onNext, onPrevious, l
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <button 
+            onClick={() => setShowGuideModal(true)} 
+            className={`flex items-center justify-center size-10 rounded-full font-bold transition-all ${theme === 'dark' ? 'bg-[#251848] text-[#FFDE59] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}
+          >
+            <span className="material-symbols-outlined text-sm">help</span>
+          </button>
+         
           <button onClick={onPrevious} className={`flex items-center gap-1 px-3 py-2 rounded-full font-bold transition-all ${theme === 'dark' ? 'bg-[#251848] text-[#E8DCFF] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}>
             <span className="material-symbols-outlined">chevron_left</span>
             <span className="hidden sm:inline">{t.prevModule[language]}</span>
           </button>
-          <button onClick={toggleTheme} className={`p-2 rounded-full transition-all ${theme === 'dark' ? 'bg-[#251848] text-[#FFDE59] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}>
-            <span className="material-symbols-outlined text-sm">{theme === 'dark' ? 'light_mode' : 'dark_mode'}</span>
-          </button>
+         
           <button onClick={onNext} className={`flex items-center gap-1 px-3 py-2 rounded-full font-bold transition-all ${theme === 'dark' ? 'bg-[#251848] text-[#E8DCFF] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}>
             <span className="hidden sm:inline">{t.nextModule[language]}</span>
             <span className="material-symbols-outlined">chevron_right</span>
@@ -175,7 +187,7 @@ const TempoModule: React.FC<TempoModuleProps> = ({ onBack, onNext, onPrevious, l
         </div>
       </header>
 
-      <main className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+      <main className="flex-1 flex flex-col lg:flex-row-reverse overflow-hidden">
         <div className="flex-1 flex flex-col p-10 gap-8 overflow-y-auto">
           <div className="flex flex-col gap-2 relative">
             <div className="relative z-10 block">
@@ -250,7 +262,7 @@ const TempoModule: React.FC<TempoModuleProps> = ({ onBack, onNext, onPrevious, l
           </div>
         </div>
 
-        <div className={`w-full lg:w-[400px] border-l p-6 flex flex-col justify-between gap-6 shadow-2xl transition-colors overflow-y-auto ${theme === 'dark' ? 'bg-[#1A1030] border-[#251848]' : 'bg-white border-slate-100'}`}>
+        <div className={`w-full lg:w-[400px] border-r p-6 flex flex-col justify-between gap-6 shadow-2xl transition-colors overflow-y-auto ${theme === 'dark' ? 'bg-[#1A1030] border-[#251848]' : 'bg-white border-slate-100'}`}>
           <div className="text-center space-y-1 mt-4">
             <span className="text-xs text-gray-400 font-bold uppercase tracking-widest">{t.currentTempo[language]}</span>
             <div className={`text-6xl font-black tracking-tighter tabular-nums leading-none ${theme === 'dark' ? 'text-[#E8DCFF]' : 'text-[#1A1A1A]'}`}>
@@ -330,18 +342,17 @@ const TempoModule: React.FC<TempoModuleProps> = ({ onBack, onNext, onPrevious, l
               </button>
             </div>
           </div>
-
-          <div className={`p-4 rounded-xl border transition-colors mb-4 ${theme === 'dark' ? 'bg-[#0F0A1A] border-[#251848]' : 'bg-gray-50 border-gray-100'}`}>
-            <h3 className={`font-bold text-sm mb-1.5 flex items-center gap-1.5 ${theme === 'dark' ? 'text-[#E8DCFF]' : 'text-[#1A1A1A]'}`}>
-              <span className="material-symbols-outlined text-primary text-sm">lightbulb</span>
-              {t.didYouKnow[language]}
-            </h3>
-            <p className="text-sm text-gray-400 leading-relaxed italic">
-              {t.italianTerms[language]}
-            </p>
-          </div>
         </div>
       </main>
+
+      <GuideModal 
+        isOpen={showGuideModal}
+        onClose={() => setShowGuideModal(false)}
+        title={MODULES.find(m => m.id === ModuleId.TEMPO)!.guide.title}
+        instructions={MODULES.find(m => m.id === ModuleId.TEMPO)!.guide.instructions}
+        language={language}
+        theme={theme}
+      />
     </div>
   );
 };

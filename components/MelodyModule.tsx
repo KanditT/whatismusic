@@ -1,8 +1,9 @@
 
 "use client";
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Point, Language, Theme } from '../types';
-import { TRANSLATIONS } from '../constants';
+import { Point, Language, Theme, ModuleId } from '../types';
+import { TRANSLATIONS, MODULES } from '../constants';
+import GuideModal from './GuideModal';
 
 interface MelodyModuleProps {
   onBack: () => void;
@@ -11,13 +12,15 @@ interface MelodyModuleProps {
   language: Language;
   theme: Theme;
   toggleTheme: () => void;
+  globalVolume: number;
 }
 
-const MelodyModule: React.FC<MelodyModuleProps> = ({ onBack, onNext, onPrevious, language, theme, toggleTheme }) => {
+const MelodyModule: React.FC<MelodyModuleProps> = ({ onBack, onNext, onPrevious, language, theme, toggleTheme, globalVolume }) => {
   const t = TRANSLATIONS;
   const [points, setPoints] = useState<Point[]>([]);
   const [isDrawing, setIsDrawing] = useState(false);
   const [showGuides, setShowGuides] = useState(true);
+  const [showGuideModal, setShowGuideModal] = useState(true);
   const [speed, setSpeed] = useState(1);
   const canvasRef = useRef<SVGSVGElement>(null);
   const [playhead, setPlayhead] = useState(0); 
@@ -117,9 +120,9 @@ const MelodyModule: React.FC<MelodyModuleProps> = ({ onBack, onNext, onPrevious,
     if (isPlaying && oscRef.current && audioCtxRef.current && gainRef.current && playheadPoint.y !== -100) {
         const freq = 880 - (playheadPoint.y / 400) * (880 - 110);
         oscRef.current.frequency.setTargetAtTime(freq, audioCtxRef.current.currentTime, 0.05);
-        gainRef.current.gain.setTargetAtTime(0.2, audioCtxRef.current.currentTime, 0.05);
+        gainRef.current.gain.setTargetAtTime(0.2 * (globalVolume / 100), audioCtxRef.current.currentTime, 0.05);
     }
-  }, [playheadPoint, isPlaying]);
+  }, [playheadPoint, isPlaying, globalVolume]);
 
   return (
     <div className={`flex h-screen w-full flex-col transition-colors duration-500 ${theme === 'dark' ? 'bg-[#0F0A1A]' : 'bg-background-light'} overflow-hidden`}>
@@ -138,13 +141,18 @@ const MelodyModule: React.FC<MelodyModuleProps> = ({ onBack, onNext, onPrevious,
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <button 
+            onClick={() => setShowGuideModal(true)} 
+            className={`flex items-center justify-center size-10 rounded-full font-bold transition-all ${theme === 'dark' ? 'bg-[#251848] text-[#FFDE59] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}
+          >
+            <span className="material-symbols-outlined text-sm">help</span>
+          </button>
+          
           <button onClick={onPrevious} className={`flex items-center gap-1 px-3 py-2 rounded-full font-bold transition-all ${theme === 'dark' ? 'bg-[#251848] text-[#E8DCFF] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}>
             <span className="material-symbols-outlined">chevron_left</span>
             <span className="hidden sm:inline">{t.prevModule[language]}</span>
           </button>
-          <button onClick={toggleTheme} className={`p-2 rounded-full transition-all ${theme === 'dark' ? 'bg-[#251848] text-[#FFDE59] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}>
-            <span className="material-symbols-outlined text-sm">{theme === 'dark' ? 'light_mode' : 'dark_mode'}</span>
-          </button>
+          
           <button onClick={onNext} className={`flex items-center gap-1 px-3 py-2 rounded-full font-bold transition-all ${theme === 'dark' ? 'bg-[#251848] text-[#E8DCFF] hover:bg-[#251848]/80' : 'bg-primary/10 text-primary hover:bg-primary/20'}`}>
             <span className="hidden sm:inline">{t.nextModule[language]}</span>
             <span className="material-symbols-outlined">chevron_right</span>
@@ -153,14 +161,13 @@ const MelodyModule: React.FC<MelodyModuleProps> = ({ onBack, onNext, onPrevious,
       </header>
 
       <main className="flex flex-1 flex-col overflow-hidden lg:flex-row">
-        <aside className={`flex w-full flex-col gap-6 border-r p-6 lg:w-[320px] lg:p-8 transition-colors ${theme === 'dark' ? 'bg-[#0F0A1A] border-[#251848]' : 'bg-white border-primary/10'}`}>
+        <aside className={`flex w-full flex-col gap-6 border-r p-6 lg:w-[400px] lg:p-10 transition-colors ${theme === 'dark' ? 'bg-[#0F0A1A] border-[#251848]' : 'bg-white border-primary/10'}`}>
           <div className="flex flex-col gap-2">
             <div className="inline-flex w-fit items-center rounded-full bg-primary/10 px-3 py-1 text-sm font-bold uppercase tracking-wide text-primary">Module 01</div>
-            <h1 className={`text-4xl font-black leading-tight ${theme === 'dark' ? 'text-[#E8DCFF]' : 'text-[#1A1A1A]'}`}>
-              {language === 'EN' ? 'Melody' : 'ทำนอง'}<br/>
-              <span className="text-2xl font-bold opacity-30">{language === 'EN' ? 'Tune' : 'ทำนอง'}</span>
+            <h1 className={`text-5xl font-black ${theme === 'dark' ? 'text-[#E8DCFF]' : 'text-[#1A1A1A]'}`}>
+              {language === 'EN' ? 'Melody' : 'ทำนอง'}
             </h1>
-            <p className="mt-2 text-sm text-gray-500">
+            <p className="text-gray-500 mt-2">
               {language === 'EN' 
                 ? 'Pitch moves up and down over time. Higher positions represent higher notes.' 
                 : 'ระดับเสียงเคลื่อนที่ขึ้นและลงตามเวลา ตำแหน่งที่สูงขึ้นหมายถึงโน้ตที่สูงขึ้น'}
@@ -228,6 +235,15 @@ const MelodyModule: React.FC<MelodyModuleProps> = ({ onBack, onNext, onPrevious,
           </div>
         </section>
       </main>
+
+      <GuideModal 
+        isOpen={showGuideModal}
+        onClose={() => setShowGuideModal(false)}
+        title={MODULES.find(m => m.id === ModuleId.MELODY)!.guide.title}
+        instructions={MODULES.find(m => m.id === ModuleId.MELODY)!.guide.instructions}
+        language={language}
+        theme={theme}
+      />
     </div>
   );
 };

@@ -12,6 +12,7 @@ const App: React.FC = () => {
   const [activeModule, setActiveModule] = useState<ModuleId>(ModuleId.MENU);
   const [language, setLanguage] = useState<Language>('EN');
   const [theme, setTheme] = useState<Theme>('dark');
+  const [globalVolume, setGlobalVolume] = useState<number>(50);
 
   useEffect(() => {
     if (theme === 'dark') {
@@ -51,7 +52,8 @@ const App: React.FC = () => {
     onPrevious: handlePrevious,
     language,
     theme,
-    toggleTheme
+    toggleTheme,
+    globalVolume
   };
 
   const renderModule = () => {
@@ -74,6 +76,8 @@ const App: React.FC = () => {
             setLanguage={setLanguage} 
             theme={theme}
             toggleTheme={toggleTheme}
+            globalVolume={globalVolume}
+            setGlobalVolume={setGlobalVolume}
           />
         );
     }

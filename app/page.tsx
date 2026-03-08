@@ -15,6 +15,7 @@ export default function Home() {
   const [language, setLanguage] = useState<Language>('EN');
   const [theme, setTheme] = useState<Theme>('dark');
   const [mounted, setMounted] = useState(false);
+  const [globalVolume, setGlobalVolume] = useState<number>(50);
 
   useEffect(() => {
     setMounted(true);
@@ -60,7 +61,8 @@ export default function Home() {
     onPrevious: handlePrevious,
     language,
     theme,
-    toggleTheme
+    toggleTheme,
+    globalVolume
   };
 
   const renderModule = () => {
@@ -83,6 +85,8 @@ export default function Home() {
             setLanguage={setLanguage} 
             theme={theme}
             toggleTheme={toggleTheme}
+            globalVolume={globalVolume}
+            setGlobalVolume={setGlobalVolume}
           />
         );
     }
