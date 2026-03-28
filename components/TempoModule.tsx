@@ -352,6 +352,7 @@ const TempoModule: React.FC<TempoModuleProps> = ({ onBack, onNext, onPrevious, l
         instructions={MODULES.find(m => m.id === ModuleId.TEMPO)!.guide.instructions}
         language={language}
         theme={theme}
+        imageSrc="/assets/tempo.png"
       />
     </div>
   );

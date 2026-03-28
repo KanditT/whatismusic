@@ -177,6 +177,7 @@ const DynamicsModule: React.FC<DynamicsModuleProps> = ({ onBack, onNext, onPrevi
         instructions={MODULES.find(m => m.id === ModuleId.DYNAMICS)!.guide.instructions}
         language={language}
         theme={theme}
+        imageSrc="/assets/dynamics.png"
       />
     </div>
   );

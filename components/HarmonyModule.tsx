@@ -219,6 +219,7 @@ const HarmonyModule: React.FC<HarmonyModuleProps> = ({ onBack, onNext, onPreviou
         instructions={MODULES.find(m => m.id === ModuleId.HARMONY)!.guide.instructions}
         language={language}
         theme={theme}
+        imageSrc="/assets/harmony.png"
       />
     </div>
   );

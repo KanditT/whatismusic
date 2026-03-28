@@ -247,6 +247,7 @@ const RhythmModule: React.FC<RhythmModuleProps> = ({ onBack, onNext, onPrevious,
         instructions={MODULES.find(m => m.id === ModuleId.RHYTHM)!.guide.instructions}
         language={language}
         theme={theme}
+        imageSrc="/assets/rhythm.png"
       />
     </div>
   );

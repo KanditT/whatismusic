@@ -243,6 +243,7 @@ const MelodyModule: React.FC<MelodyModuleProps> = ({ onBack, onNext, onPrevious,
         instructions={MODULES.find(m => m.id === ModuleId.MELODY)!.guide.instructions}
         language={language}
         theme={theme}
+        imageSrc="/assets/melody.png"
       />
     </div>
   );
